@@ -1,25 +1,38 @@
+import { Component } from "react";
+
 import Task from "./Task";
 
-function TaskList({ state }) {
-  const filteredTasks = state.tasks.filter((task) => {
-    switch (state.filter) {
-      case "active":
-        return !task.completed;
-      case "completed":
-        return task.completed;
-      case "all":
-        return true;
-      default:
-        return false;
-    }
-  });
+export default class TaskList extends Component {
+  render() {
+    const {
+      tasks,
+      filter,
+      callbacks,
+    } = this.props;
 
-  const taskElements = filteredTasks.map((task) => {
-    const { id, ...data } = task;
-    return <Task data={data} key={id}></Task>;
-  });
+    const filteredTasks = tasks.filter((task) => {
+      switch (filter) {
+        case "active":
+          return !task.completed;
+        case "completed":
+          return task.completed;
+        case "all":
+          return true;
+        default:
+          return false;
+      }
+    });
 
-  return <ul className="todo-list">{taskElements}</ul>;
+    const taskElements = filteredTasks.map((task) => {
+      return (
+        <Task
+          {...task}
+          callbacks={callbacks}
+          key={task.id}
+        ></Task>
+      );
+    });
+
+    return <ul className="todo-list">{taskElements}</ul>;
+  }
 }
-
-export default TaskList;

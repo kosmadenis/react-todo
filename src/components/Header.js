@@ -1,12 +1,14 @@
+import { Component } from "react";
+
 import NewTaskForm from "./NewTaskForm";
 
-function Header() {
-  return (
-    <header className="header">
-      <h1>todos</h1>
-      <NewTaskForm />
-    </header>
-  );
+export default class Header extends Component {
+  render() {
+    return (
+      <header className="header">
+        <h1>todos</h1>
+        <NewTaskForm {...this.props} />
+      </header>
+    );
+  }
 }
-
-export default Header;
