@@ -1,17 +1,43 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+import "./index.css";
+
+import App from "./components/App";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
+const tasks = [
+  {
+    id: 1,
+    creationTime: new Date(Date.now() - 17_000),
+    description: "Completed task",
+    completed: true,
+    editing: false,
+  },
+  {
+    id: 2,
+    creationTime: new Date(Date.now() - 100_000),
+    description: "Editing task",
+    completed: false,
+    editing: true,
+  },
+  {
+    id: 3,
+    creationTime: new Date(Date.now() - 300_000),
+    description: "Active task",
+    completed: false,
+    editing: false,
+  }
+];
+
+const state = {
+  tasks,
+  filter: "all",
+}
+
 root.render(
   <React.StrictMode>
-    <App />
+    <App state={state} />
   </React.StrictMode>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
