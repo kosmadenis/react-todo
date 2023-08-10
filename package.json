@@ -5,8 +5,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "lint": "eslint ./src",
-    "lint:fix": "eslint ./src --fix",
+    "lint": "eslint ./src --color",
+    "lint:fix": "eslint ./src --fix --color",
     "format": "prettier --write ./src/**/*.js"
   },
   "lint-staged": {
