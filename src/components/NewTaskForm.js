@@ -1,38 +1,34 @@
-import { Component } from "react";
-import { headerCallbacksPropTypes } from "../app-prop-types";
+import { headerCallbacksPropTypes } from '../app-prop-types'
 
-export default class NewTaskForm extends Component {
-  render() {
-    const { addTask } = this.props;
+export default function NewTaskForm(props) {
+  const { addTask } = props
 
-    return (
-      <input
-        className="new-todo"
-        placeholder="What needs to be done?"
-        autoFocus
-        onKeyDown={(e) => {
-          if (e.key !== "Enter") {
-            return;
-          }
+  return (
+    <input
+      className="new-todo"
+      placeholder="What needs to be done?"
+      onKeyDown={(e) => {
+        if (e.key !== 'Enter') {
+          return
+        }
 
-          const text = e.target.value;
-          e.target.value = "";
+        const text = e.target.value
+        e.target.value = ''
 
-          if (!text) {
-            return;
-          }
+        if (!text) {
+          return
+        }
 
-          addTask(text);
-        }}
-      />
-    );
-  }
+        addTask(text)
+      }}
+    />
+  )
+}
 
-  static defaultProps = {
-    addTask: () => {},
-  }
+NewTaskForm.defaultProps = {
+  addTask: () => {},
+}
 
-  static propTypes = {
-    ...headerCallbacksPropTypes,
-  };
+NewTaskForm.propTypes = {
+  ...headerCallbacksPropTypes,
 }

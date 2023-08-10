@@ -1,49 +1,38 @@
-import { Component } from "react";
-import {
-  filterPropTypes,
-  tasksFilterCallbackPropTypes,
-} from "../app-prop-types";
+import { filterPropTypes, tasksFilterCallbackPropTypes } from '../app-prop-types'
 
-export default class TasksFilter extends Component {
-  render() {
-    const { filter, setFilter } = this.props;
+export default function TasksFilter(props) {
+  const { filter, setFilter } = props
 
-    return (
-      <ul className="filters">
-        <li>
-          <button
-            className={filter === "all" ? "selected" : null}
-            onClick={() => setFilter("all")}
-          >
-            All
-          </button>
-        </li>
-        <li>
-          <button
-            className={filter === "active" ? "selected" : null}
-            onClick={() => setFilter("active")}
-          >
-            Active
-          </button>
-        </li>
-        <li>
-          <button
-            className={filter === "completed" ? "selected" : null}
-            onClick={() => setFilter("completed")}
-          >
-            Completed
-          </button>
-        </li>
-      </ul>
-    );
-  }
+  return (
+    <ul className="filters">
+      <li>
+        <button type="button" className={filter === 'all' ? 'selected' : null} onClick={() => setFilter('all')}>
+          All
+        </button>
+      </li>
+      <li>
+        <button type="button" className={filter === 'active' ? 'selected' : null} onClick={() => setFilter('active')}>
+          Active
+        </button>
+      </li>
+      <li>
+        <button
+          type="button"
+          className={filter === 'completed' ? 'selected' : null}
+          onClick={() => setFilter('completed')}
+        >
+          Completed
+        </button>
+      </li>
+    </ul>
+  )
+}
 
-  static defaultProps = {
-    setFilter: () => {},
-  };
+TasksFilter.defaultProps = {
+  setFilter: () => {},
+}
 
-  static propTypes = {
-    ...filterPropTypes,
-    ...tasksFilterCallbackPropTypes,
-  };
+TasksFilter.propTypes = {
+  ...filterPropTypes,
+  ...tasksFilterCallbackPropTypes,
 }

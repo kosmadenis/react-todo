@@ -1,4 +1,4 @@
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types'
 
 // Пропсы состояния приложения (App.state) - все обязательны
 // (не может возникнуть такой ситуации, где они не переданы).
@@ -9,14 +9,14 @@ export const taskPropTypes = {
   description: PropTypes.string.isRequired,
   completed: PropTypes.bool.isRequired,
   editing: PropTypes.bool.isRequired,
-};
+}
 
-export const filterPropTypes = PropTypes.oneOf(["all", "active", "completed"]).isRequired;
+export const filterPropTypes = PropTypes.oneOf(['all', 'active', 'completed']).isRequired
 
 export const statePropTypes = {
   filter: filterPropTypes,
   tasks: PropTypes.arrayOf(PropTypes.shape(taskPropTypes)).isRequired,
-};
+}
 
 // Все коллбэки - необязательны
 // (если нужно построить статический интерфейс).
@@ -27,17 +27,17 @@ export const taskCallbackPropTypes = {
   startEditingTask: PropTypes.func,
   finishEditingTask: PropTypes.func,
   removeTask: PropTypes.func,
-};
+}
 
 export const headerCallbacksPropTypes = {
   addTask: PropTypes.func,
-};
+}
 
 export const tasksFilterCallbackPropTypes = {
   setFilter: PropTypes.func,
-};
+}
 
 export const footerCallbackPropTypes = {
   ...tasksFilterCallbackPropTypes,
   clearCompleted: PropTypes.func,
-};
+}

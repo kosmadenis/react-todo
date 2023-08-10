@@ -1,32 +1,34 @@
-import { Component } from "react";
+import { Component } from 'react'
+import { formatDistanceToNow } from 'date-fns'
 
-import { formatDistanceToNow } from "date-fns";
-
-import { taskCallbackPropTypes, taskPropTypes } from "../app-prop-types";
+import { taskCallbackPropTypes, taskPropTypes } from '../app-prop-types'
 
 export default class Task extends Component {
-  timeTextTimer = null;
+  timeTextTimer = null
 
-  state = {
-    ...this.createTimeState(),
-  };
+  constructor(props) {
+    super(props)
 
-  createTimeState() {
-    return {
-      timeText: formatDistanceToNow(this.props.creationTime),
-    };
+    this.state = {
+      ...this.createTimeState(),
+    }
   }
 
   componentDidMount() {
     // Таймер обновления (относительного) времени создания таска:
-    this.timeTextTimer = setInterval(
-      () => this.setState(this.createTimeState()),
-      60 * 1000
-    );
+    this.timeTextTimer = setInterval(() => this.setState(this.createTimeState()), 60 * 1000)
   }
 
   componentWillUnmount() {
-    clearInterval(this.timeTextTimer);
+    clearInterval(this.timeTextTimer)
+  }
+
+  createTimeState() {
+    const { creationTime } = this.props
+
+    return {
+      timeText: formatDistanceToNow(creationTime),
+    }
   }
 
   render() {
@@ -41,13 +43,13 @@ export default class Task extends Component {
       startEditingTask,
       finishEditingTask,
       removeTask,
-    } = this.props;
+    } = this.props
 
-    let className = "";
-    let input;
+    let className = ''
+    let input
 
     if (editing) {
-      className += " editing";
+      className += ' editing'
 
       input = (
         <input
@@ -55,20 +57,22 @@ export default class Task extends Component {
           className="edit"
           value={description}
           onKeyDown={(event) => {
-            if (event.key !== "Enter" && event.key !== "Escape") {
-              return;
+            if (event.key !== 'Enter' && event.key !== 'Escape') {
+              return
             }
 
-            finishEditingTask(id);
+            finishEditingTask(id)
           }}
           onChange={(event) => setTaskDescription(id, event.target.value)}
         />
-      );
+      )
     }
 
     if (completed) {
-      className += " completed";
+      className += ' completed'
     }
+
+    const { timeText } = this.state
 
     return (
       <li className={className}>
@@ -82,33 +86,26 @@ export default class Task extends Component {
           />
           <label htmlFor={`Task-${id}`}>
             <span className="description">{description}</span>
-            <span className="created">{this.state.timeText}</span>
+            <span className="created">{timeText}</span>
           </label>
-          <button
-            className="icon icon-edit"
-            onClick={() => startEditingTask(id)}
-          ></button>
-          <button
-            className="icon icon-destroy"
-            onClick={() => removeTask(id)}
-          ></button>
+          <button type="button" aria-label="Edit" className="icon icon-edit" onClick={() => startEditingTask(id)} />
+          <button type="button" aria-label="Remove" className="icon icon-destroy" onClick={() => removeTask(id)} />
         </div>
         {input}
       </li>
-    );
+    )
   }
+}
 
-  // Пустые функции по умолчанию для всех коллбэков.
-  static defaultProps = {
-    toggleTaskCompleted: () => {},
-    setTaskDescription: () => {},
-    startEditingTask: () => {},
-    finishEditingTask: () => {},
-    removeTask: () => {},
-  };
+Task.defaultProps = {
+  toggleTaskCompleted: () => {},
+  setTaskDescription: () => {},
+  startEditingTask: () => {},
+  finishEditingTask: () => {},
+  removeTask: () => {},
+}
 
-  static propTypes = {
-    ...taskPropTypes,
-    ...taskCallbackPropTypes,
-  };
+Task.propTypes = {
+  ...taskPropTypes,
+  ...taskCallbackPropTypes,
 }

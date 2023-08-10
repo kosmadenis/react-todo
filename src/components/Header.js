@@ -1,20 +1,18 @@
-import { Component } from "react";
+import { headerCallbacksPropTypes } from '../app-prop-types'
 
-import NewTaskForm from "./NewTaskForm";
+import NewTaskForm from './NewTaskForm'
 
-import { headerCallbacksPropTypes } from "../app-prop-types";
+export default function Header(props) {
+  const { addTask } = props
 
-export default class Header extends Component {
-  render() {
-    return (
-      <header className="header">
-        <h1>todos</h1>
-        <NewTaskForm {...this.props} />
-      </header>
-    );
-  }
+  return (
+    <header className="header">
+      <h1>todos</h1>
+      <NewTaskForm addTask={addTask} />
+    </header>
+  )
+}
 
-  static propTypes = {
-    ...headerCallbacksPropTypes,
-  };
+Header.propTypes = {
+  ...headerCallbacksPropTypes,
 }

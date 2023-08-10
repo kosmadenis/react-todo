@@ -1,0 +1,67 @@
+{
+  "env": {
+    "browser": true
+    // Смысла указывать версию ECMAScript здесь нет,
+    // т.к. используется альтернативный парсер (Babel).
+  },
+  "ignorePatterns": ["node_modules", "dist", "build"],
+  "extends": [
+    // Правила из исходного кофига
+    // (зачем они тут вообще? их же перезапишут правила Airbnb)
+    // (-- оставлю на всякий, вдруг докопаются)
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    // Плюс правила Airbnb (React + Hooks)
+    "airbnb",
+    "airbnb/hooks",
+    // Логично перенести правила prettier в конец,
+    // чтобы конфликтов было минимум. В любом случае,
+    // правила prettier чисто визуальные.
+    "plugin:prettier/recommended"
+  ],
+  // Babel-парсер, как указано в задаче.
+  "parser": "@babel/eslint-parser",
+  "parserOptions": {
+    // Для Babel имеет смысл указывать только sourceType - версия ECMAScript
+    // и надстройки (JSX, ...) указываются в кофниге Babel (или в пресете).
+    "sourceType": "module",
+    // Выкл. обязательный поиск конфигов для Babel - настройки можно указать прямо тут.
+    "requireConfigFile": false,
+    "babelOptions": {
+      // Установить пресет для Babel (важно! - иначе не будет парсится синтаксис JSX)
+      "presets": ["@babel/preset-react"]
+    }
+  },
+  "plugins": ["import", "react", "prettier"],
+  "rules": {
+    // Тут надо явно указать отступы в switch/case, иначе (скорее
+    // всего из-за airbnb) будет конфликт с prettier.
+    "indent": ["error", 2, { "SwitchCase": 1 }],
+    // Остальное как было:
+    "prettier/prettier": "error",
+    "linebreak-style": [0, "unix"],
+    "quotes": ["error", "single"],
+    "semi": ["error", "never"],
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": 0,
+    "import/no-unresolved": [2, { "caseSensitive": false }],
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "import/order": [
+      2,
+      {
+        "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
+        "newlines-between": "always"
+      }
+    ]
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"],
+        "moduleDirectory": ["node_modules", "src/"]
+      }
+    }
+  }
+}

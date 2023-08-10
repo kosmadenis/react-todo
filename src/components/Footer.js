@@ -1,34 +1,28 @@
-import { Component } from "react";
+import { footerCallbackPropTypes, statePropTypes } from '../app-prop-types'
 
-import TasksFilter from "./TasksFilter";
-import { footerCallbackPropTypes, statePropTypes } from "../app-prop-types";
+import TasksFilter from './TasksFilter'
 
-export default class Footer extends Component {
-  render() {
-    const { tasks, filter, clearCompleted, ...callbacks } = this.props;
+export default function Footer(props) {
+  const { tasks, filter, clearCompleted, ...callbacks } = props
 
-    const numActiveTasks = tasks.reduce(
-      (acc, val) => (!val.completed ? acc + 1 : acc),
-      0
-    );
+  const numActiveTasks = tasks.reduce((acc, val) => (!val.completed ? acc + 1 : acc), 0)
 
-    return (
-      <footer className="footer">
-        <span className="todo-count">{numActiveTasks} items left</span>
-        <TasksFilter filter={filter} {...callbacks} />
-        <button className="clear-completed" onClick={clearCompleted}>
-          Clear completed
-        </button>
-      </footer>
-    );
-  }
+  return (
+    <footer className="footer">
+      <span className="todo-count">{numActiveTasks} items left</span>
+      <TasksFilter filter={filter} setFilter={callbacks.setFilter} />
+      <button type="button" className="clear-completed" onClick={clearCompleted}>
+        Clear completed
+      </button>
+    </footer>
+  )
+}
 
-  static defaultProps = {
-    clearCompleted: () => {},
-  };
+Footer.defaultProps = {
+  clearCompleted: () => {},
+}
 
-  static propTypes = {
-    ...statePropTypes,
-    ...footerCallbackPropTypes,
-  };
+Footer.propTypes = {
+  ...statePropTypes,
+  ...footerCallbackPropTypes,
 }
