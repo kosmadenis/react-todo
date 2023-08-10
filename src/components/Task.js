@@ -2,6 +2,8 @@ import { Component } from "react";
 
 import { formatDistanceToNow } from "date-fns";
 
+import { taskCallbackPropTypes, taskPropTypes } from "../app-prop-types";
+
 export default class Task extends Component {
   timeTextTimer = null;
 
@@ -28,15 +30,18 @@ export default class Task extends Component {
   }
 
   render() {
-    const { id, description, completed, editing, callbacks } = this.props;
-
     const {
+      id,
+      description,
+      completed,
+      editing,
+
       toggleTaskCompleted,
       setTaskDescription,
       startEditingTask,
       finishEditingTask,
       removeTask,
-    } = callbacks;
+    } = this.props;
 
     let className = "";
     let input;
@@ -92,4 +97,18 @@ export default class Task extends Component {
       </li>
     );
   }
+
+  // Пустые функции по умолчанию для всех коллбэков.
+  static defaultProps = {
+    toggleTaskCompleted: () => {},
+    setTaskDescription: () => {},
+    startEditingTask: () => {},
+    finishEditingTask: () => {},
+    removeTask: () => {},
+  };
+
+  static propTypes = {
+    ...taskPropTypes,
+    ...taskCallbackPropTypes,
+  };
 }

@@ -2,6 +2,8 @@ import { Component } from "react";
 
 import NewTaskForm from "./NewTaskForm";
 
+import { headerCallbacksPropTypes } from "../app-prop-types";
+
 export default class Header extends Component {
   render() {
     return (
@@ -11,4 +13,8 @@ export default class Header extends Component {
       </header>
     );
   }
+
+  static propTypes = {
+    ...headerCallbacksPropTypes,
+  };
 }

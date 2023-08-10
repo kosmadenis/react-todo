@@ -118,27 +118,29 @@ export default class App extends Component {
   /* --- Методы --- */
 
   render() {
+    const headerCallbacks = {
+      addTask: this.addTask,
+    };
+
+    const taskListCallbacks = {
+      toggleTaskCompleted: this.toggleTaskCompleted,
+      setTaskDescription: this.setTaskDescription,
+      startEditingTask: this.startEditingTask,
+      finishEditingTask: this.finishEditingTask,
+      removeTask: this.removeTask,
+    };
+
+    const footerCallbacks = {
+      setFilter: this.setFilter,
+      clearCompleted: this.clearCompleted,
+    };
+
     return (
       <section className="todoapp">
-        <Header callbacks={{ addTask: this.addTask }} />
+        <Header {...headerCallbacks} />
         <section className="main">
-          <TaskList
-            {...this.state}
-            callbacks={{
-              toggleTaskCompleted: this.toggleTaskCompleted,
-              setTaskDescription: this.setTaskDescription,
-              startEditingTask: this.startEditingTask,
-              finishEditingTask: this.finishEditingTask,
-              removeTask: this.removeTask,
-            }}
-          />
-          <Footer
-            {...this.state}
-            callbacks={{
-              setFilter: this.setFilter,
-              clearCompleted: this.clearCompleted,
-            }}
-          />
+          <TaskList {...this.state} {...taskListCallbacks} />
+          <Footer {...this.state} {...footerCallbacks} />
         </section>
       </section>
     );

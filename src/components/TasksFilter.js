@@ -1,15 +1,19 @@
 import { Component } from "react";
+import {
+  filterPropTypes,
+  tasksFilterCallbackPropTypes,
+} from "../app-prop-types";
 
 export default class TasksFilter extends Component {
   render() {
-    const { filter, callbacks } = this.props;
+    const { filter, setFilter } = this.props;
 
     return (
       <ul className="filters">
         <li>
           <button
             className={filter === "all" ? "selected" : null}
-            onClick={() => callbacks.setFilter("all")}
+            onClick={() => setFilter("all")}
           >
             All
           </button>
@@ -17,7 +21,7 @@ export default class TasksFilter extends Component {
         <li>
           <button
             className={filter === "active" ? "selected" : null}
-            onClick={() => callbacks.setFilter("active")}
+            onClick={() => setFilter("active")}
           >
             Active
           </button>
@@ -25,7 +29,7 @@ export default class TasksFilter extends Component {
         <li>
           <button
             className={filter === "completed" ? "selected" : null}
-            onClick={() => callbacks.setFilter("completed")}
+            onClick={() => setFilter("completed")}
           >
             Completed
           </button>
@@ -33,4 +37,13 @@ export default class TasksFilter extends Component {
       </ul>
     );
   }
+
+  static defaultProps = {
+    setFilter: () => {},
+  };
+
+  static propTypes = {
+    ...filterPropTypes,
+    ...tasksFilterCallbackPropTypes,
+  };
 }

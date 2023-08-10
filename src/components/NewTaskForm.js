@@ -1,7 +1,10 @@
 import { Component } from "react";
+import { headerCallbacksPropTypes } from "../app-prop-types";
 
 export default class NewTaskForm extends Component {
   render() {
+    const { addTask } = this.props;
+
     return (
       <input
         className="new-todo"
@@ -19,9 +22,17 @@ export default class NewTaskForm extends Component {
             return;
           }
 
-          this.props.callbacks.addTask(text);
+          addTask(text);
         }}
       />
     );
   }
+
+  static defaultProps = {
+    addTask: () => {},
+  }
+
+  static propTypes = {
+    ...headerCallbacksPropTypes,
+  };
 }
