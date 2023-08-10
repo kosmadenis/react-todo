@@ -57,9 +57,7 @@ export default class App extends Component {
   toggleTaskCompleted = (id) => {
     this.setState(({ tasks }) => ({
       tasks: tasks.map((task) =>
-        task.id === id
-          ? Object.assign({}, task, { completed: !task.completed })
-          : task
+        task.id === id ? { ...task, completed: !task.completed } : task
       ),
     }));
   };
@@ -67,7 +65,7 @@ export default class App extends Component {
   setTaskDescription = (id, description) => {
     this.setState(({ tasks }) => ({
       tasks: tasks.map((task) =>
-        task.id === id ? Object.assign({}, task, { description }) : task
+        task.id === id ? { ...task, description } : task
       ),
     }));
   };
@@ -75,7 +73,7 @@ export default class App extends Component {
   startEditingTask = (id) => {
     this.setState(({ tasks }) => ({
       tasks: tasks.map((task) =>
-        task.id === id ? Object.assign({}, task, { editing: true }) : task
+        task.id === id ? { ...task, editing: true } : task
       ),
     }));
   };
@@ -87,7 +85,7 @@ export default class App extends Component {
       for (const task of tasks) {
         if (task.id === id) {
           if (task.description) {
-            newTasks.push(Object.assign({}, task, { editing: false }));
+            newTasks.push({ ...task, editing: false });
           }
           // Иначе, если текст пустой, таск удалаяется
         } else {
@@ -107,10 +105,8 @@ export default class App extends Component {
     }));
   };
 
-  setFilter = (newFilter) => {
-    this.setState(({ filter: oldFilter }) => ({
-      filter: oldFilter === newFilter ? null : newFilter,
-    }));
+  setFilter = (filter) => {
+    this.setState({ filter });
   };
 
   clearCompleted = () => {

@@ -16,6 +16,7 @@ export default class Task extends Component {
   }
 
   componentDidMount() {
+    // Таймер обновления (относительного) времени создания таска:
     this.timeTextTimer = setInterval(
       () => this.setState(this.createTimeState()),
       60 * 1000
