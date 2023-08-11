@@ -1,9 +1,11 @@
 import { Component } from 'react'
 import { formatDistanceToNow } from 'date-fns'
 
-import { taskCallbackPropTypes, taskPropTypes } from '../app-prop-types'
+import { taskCallbackPropTypes, taskPropTypes } from '../../app-prop-types'
 
-export default class Task extends Component {
+class Task extends Component {
+  static timeTextUpdateInterval = 60 * 1000 // 1 минута
+
   timeTextTimer = null
 
   constructor(props) {
@@ -16,7 +18,7 @@ export default class Task extends Component {
 
   componentDidMount() {
     // Таймер обновления (относительного) времени создания таска:
-    this.timeTextTimer = setInterval(() => this.setState(this.createTimeState()), 60 * 1000)
+    this.timeTextTimer = setInterval(() => this.setState(this.createTimeState()), Task.timeTextUpdateInterval)
   }
 
   componentWillUnmount() {
@@ -51,19 +53,27 @@ export default class Task extends Component {
     if (editing) {
       className += ' editing'
 
+      const inputOnKeyDown = (event) => {
+        if (event.key !== 'Enter' && event.key !== 'Escape') {
+          return
+        }
+
+        finishEditingTask(id)
+      }
+
+      const inputOnChange = (event) => {
+        return setTaskDescription(id, event.target.value)
+      }
+
       input = (
         <input
+          autoFocus
+          aria-label="task text"
           type="text"
           className="edit"
           value={description}
-          onKeyDown={(event) => {
-            if (event.key !== 'Enter' && event.key !== 'Escape') {
-              return
-            }
-
-            finishEditingTask(id)
-          }}
-          onChange={(event) => setTaskDescription(id, event.target.value)}
+          onKeyDown={inputOnKeyDown}
+          onChange={inputOnChange}
         />
       )
     }
@@ -74,22 +84,37 @@ export default class Task extends Component {
 
     const { timeText } = this.state
 
+    const checkboxOnChange = () => {
+      toggleTaskCompleted(id)
+    }
+
+    const editButtonOnClick = () => {
+      startEditingTask(id)
+    }
+
+    const removeButtonOnClick = () => {
+      removeTask(id)
+    }
+
+    const checkboxId = `Task-${id}`
+
     return (
       <li className={className}>
         <div className="view">
           <input
-            id={`Task-${id}`}
+            aria-label="toggle completion"
+            id={checkboxId}
             className="toggle"
             type="checkbox"
             checked={completed}
-            onChange={() => toggleTaskCompleted(id)}
+            onChange={checkboxOnChange}
           />
-          <label htmlFor={`Task-${id}`}>
+          <label htmlFor={checkboxId}>
             <span className="description">{description}</span>
             <span className="created">{timeText}</span>
           </label>
-          <button type="button" aria-label="Edit" className="icon icon-edit" onClick={() => startEditingTask(id)} />
-          <button type="button" aria-label="Remove" className="icon icon-destroy" onClick={() => removeTask(id)} />
+          <button type="button" aria-label="edit" className="icon icon-edit" onClick={editButtonOnClick} />
+          <button type="button" aria-label="remove" className="icon icon-destroy" onClick={removeButtonOnClick} />
         </div>
         {input}
       </li>
@@ -109,3 +134,5 @@ Task.propTypes = {
   ...taskPropTypes,
   ...taskCallbackPropTypes,
 }
+
+export default Task

@@ -1,21 +1,19 @@
-import { statePropTypes, taskCallbackPropTypes } from '../app-prop-types'
+import { statePropTypes, taskCallbackPropTypes } from '../../app-prop-types'
+import Task from '../Task'
 
-import Task from './Task'
-
-export default function TaskList(props) {
+function TaskList(props) {
   const { tasks, filter, ...callbacks } = props
 
   const filteredTasks = tasks.filter((task) => {
-    switch (filter) {
-      case 'active':
-        return !task.completed
-      case 'completed':
-        return task.completed
-      case 'all':
-        return true
-      default:
-        throw new Error(`Unknown filter value "${filter}"`)
+    if (filter === 'active') {
+      return !task.completed
     }
+
+    if (filter === 'completed') {
+      return task.completed
+    }
+
+    return true
   })
 
   const taskElements = filteredTasks.map((task) => (
@@ -43,3 +41,5 @@ TaskList.propTypes = {
   ...statePropTypes,
   ...taskCallbackPropTypes,
 }
+
+export default TaskList

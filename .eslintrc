@@ -36,6 +36,10 @@
   },
   "plugins": ["import", "react", "prettier"],
   "rules": {
+    // Добавил для автофокуса (иначе на данном этапе никак)
+    "jsx-a11y/no-autofocus": 0,
+    // Добавил это для проброса экспортов компонентов через index.js в папке компонента.
+    "no-restricted-exports": 0,
     // Тут надо явно указать отступы в switch/case, иначе (скорее
     // всего из-за airbnb) будет конфликт с prettier.
     "indent": ["error", 2, { "SwitchCase": 1 }],

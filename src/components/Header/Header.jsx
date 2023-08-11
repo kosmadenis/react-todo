@@ -1,8 +1,7 @@
-import { headerCallbacksPropTypes } from '../app-prop-types'
+import { headerCallbacksPropTypes } from '../../app-prop-types'
+import NewTaskForm from '../NewTaskForm'
 
-import NewTaskForm from './NewTaskForm'
-
-export default function Header(props) {
+function Header(props) {
   const { addTask } = props
 
   return (
@@ -16,3 +15,5 @@ export default function Header(props) {
 Header.propTypes = {
   ...headerCallbacksPropTypes,
 }
+
+export default Header

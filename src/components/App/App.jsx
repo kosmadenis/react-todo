@@ -1,10 +1,10 @@
 import { Component } from 'react'
 
-import Footer from './Footer'
-import Header from './Header'
-import TaskList from './TaskList'
+import Footer from '../Footer'
+import Header from '../Header'
+import TaskList from '../TaskList'
 
-export default class App extends Component {
+class App extends Component {
   constructor(props) {
     super(props)
 
@@ -77,25 +77,13 @@ export default class App extends Component {
   }
 
   finishEditingTask = (id) => {
-    this.setState(({ tasks }) => {
-      const newTasks = []
-
-      // map + filter
-      tasks.forEach((task) => {
-        if (task.id === id) {
-          if (task.description) {
-            newTasks.push({ ...task, editing: false })
-          }
-          // Иначе, если текст пустой, удалить таск.
-        } else {
-          newTasks.push(task)
-        }
-      })
-
-      return {
-        tasks: newTasks,
-      }
-    })
+    this.setState(({ tasks }) => ({
+      tasks: tasks
+        // 1. Удалить этот таск, если текст пустой
+        .filter((task) => task.id !== id || !!task.description)
+        // 2. Выключить этому таску режим редактирования
+        .map((task) => (task.id === id ? { ...task, editing: false } : task)),
+    }))
   }
 
   removeTask = (id) => {
@@ -138,3 +126,5 @@ export default class App extends Component {
     )
   }
 }
+
+export default App
