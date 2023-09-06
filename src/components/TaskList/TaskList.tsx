@@ -1,9 +1,21 @@
-import { statePropTypes, taskCallbackPropTypes } from '../../app-prop-types'
+import React from 'react'
+
 import Task from '../Task'
+import { TaskFilter, type TaskData } from '../../model/types'
 
-function TaskList(props) {
-  const { tasks, filter, ...callbacks } = props
+interface Props {
+  tasks: TaskData[]
+  filter: TaskFilter
+  toggleTaskCompleted: (id: number) => void
+  setTaskTitle: (id: number, title: string) => void
+  startEditingTask: (id: number) => void
+  finishEditingTask: (id: number) => void
+  removeTask: (id: number) => void
+  pauseTaskTimer: (id: number) => void
+  resumeTaskTimer: (id: number) => void
+}
 
+const TaskList: React.FC<Props> = ({ tasks, filter, ...callbacks }) => {
   const filteredTasks = tasks.filter((task) => {
     if (filter === 'active') {
       return !task.completed
@@ -17,29 +29,10 @@ function TaskList(props) {
   })
 
   const taskElements = filteredTasks.map((task) => (
-    // Airbnb конфиг для ESLint не позволяет деструктурировать объекты в props,
-    // поэтому такое кошмарное уродство :(
-    <Task
-      key={task.id}
-      id={task.id}
-      creationTime={task.creationTime}
-      description={task.description}
-      completed={task.completed}
-      editing={task.editing}
-      toggleTaskCompleted={callbacks.toggleTaskCompleted}
-      setTaskDescription={callbacks.setTaskDescription}
-      startEditingTask={callbacks.startEditingTask}
-      finishEditingTask={callbacks.finishEditingTask}
-      removeTask={callbacks.removeTask}
-    />
+    <Task key={task.id} {...task} {...callbacks} />
   ))
 
   return <ul className="todo-list">{taskElements}</ul>
-}
-
-TaskList.propTypes = {
-  ...statePropTypes,
-  ...taskCallbackPropTypes,
 }
 
 export default TaskList

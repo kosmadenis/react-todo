@@ -1,14 +1,30 @@
-import { Component } from 'react'
+import React from 'react'
 import { formatDistanceToNow } from 'date-fns'
 
-import { taskCallbackPropTypes, taskPropTypes } from '../../app-prop-types'
+import { type TaskData } from '../../model/types'
 
-class Task extends Component {
-  static timeTextUpdateInterval = 60 * 1000 // 1 минута
+import Timer from './Timer'
 
-  timeTextTimer = null
+interface Props extends TaskData {
+  toggleTaskCompleted: (id: number) => void
+  setTaskTitle: (id: number, title: string) => void
+  startEditingTask: (id: number) => void
+  finishEditingTask: (id: number) => void
+  removeTask: (id: number) => void
+  pauseTaskTimer: (id: number) => void
+  resumeTaskTimer: (id: number) => void
+}
 
-  constructor(props) {
+interface State {
+  timeText: string
+}
+
+const TIME_UPDATE_INTERVAL = 60 * 1000
+
+const Task = class extends React.Component<Props, State> {
+  timer?: number
+
+  constructor(props: Props) {
     super(props)
 
     this.state = {
@@ -16,13 +32,15 @@ class Task extends Component {
     }
   }
 
-  componentDidMount() {
-    // Таймер обновления (относительного) времени создания таска:
-    this.timeTextTimer = setInterval(() => this.setState(this.createTimeState()), Task.timeTextUpdateInterval)
+  override componentDidMount() {
+    this.timer = window.setInterval(
+      () => this.setState(this.createTimeState()),
+      TIME_UPDATE_INTERVAL
+    )
   }
 
-  componentWillUnmount() {
-    clearInterval(this.timeTextTimer)
+  override componentWillUnmount() {
+    window.clearInterval(this.timer)
   }
 
   createTimeState() {
@@ -33,18 +51,22 @@ class Task extends Component {
     }
   }
 
-  render() {
+  override render() {
     const {
       id,
-      description,
+      title,
       completed,
       editing,
+      timerTime,
+      timerOrigin,
 
       toggleTaskCompleted,
-      setTaskDescription,
+      setTaskTitle,
       startEditingTask,
       finishEditingTask,
       removeTask,
+      pauseTaskTimer,
+      resumeTaskTimer,
     } = this.props
 
     let className = ''
@@ -53,7 +75,7 @@ class Task extends Component {
     if (editing) {
       className += ' editing'
 
-      const inputOnKeyDown = (event) => {
+      const inputOnKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key !== 'Enter' && event.key !== 'Escape') {
           return
         }
@@ -61,8 +83,8 @@ class Task extends Component {
         finishEditingTask(id)
       }
 
-      const inputOnChange = (event) => {
-        return setTaskDescription(id, event.target.value)
+      const inputOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        return setTaskTitle(id, event.target.value)
       }
 
       input = (
@@ -71,7 +93,7 @@ class Task extends Component {
           aria-label="task text"
           type="text"
           className="edit"
-          value={description}
+          value={title}
           onKeyDown={inputOnKeyDown}
           onChange={inputOnChange}
         />
@@ -110,29 +132,34 @@ class Task extends Component {
             onChange={checkboxOnChange}
           />
           <label htmlFor={checkboxId}>
-            <span className="description">{description}</span>
-            <span className="created">{timeText}</span>
+            <span className="title">{title}</span>
+            <Timer
+              id={id}
+              completed={completed}
+              timerTime={timerTime}
+              timerOrigin={timerOrigin}
+              pauseTaskTimer={pauseTaskTimer}
+              resumeTaskTimer={resumeTaskTimer}
+            />
+            <span className="description">{timeText}</span>
           </label>
-          <button type="button" aria-label="edit" className="icon icon-edit" onClick={editButtonOnClick} />
-          <button type="button" aria-label="remove" className="icon icon-destroy" onClick={removeButtonOnClick} />
+          <button
+            type="button"
+            aria-label="edit"
+            className="icon icon-edit"
+            onClick={editButtonOnClick}
+          />
+          <button
+            type="button"
+            aria-label="remove"
+            className="icon icon-destroy"
+            onClick={removeButtonOnClick}
+          />
         </div>
         {input}
       </li>
     )
   }
-}
-
-Task.defaultProps = {
-  toggleTaskCompleted: () => {},
-  setTaskDescription: () => {},
-  startEditingTask: () => {},
-  finishEditingTask: () => {},
-  removeTask: () => {},
-}
-
-Task.propTypes = {
-  ...taskPropTypes,
-  ...taskCallbackPropTypes,
 }
 
 export default Task

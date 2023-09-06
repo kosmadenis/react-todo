@@ -1,19 +1,18 @@
-import { headerCallbacksPropTypes } from '../../app-prop-types'
-import NewTaskForm from '../NewTaskForm'
+import React from 'react'
 
-function Header(props) {
-  const { addTask } = props
+import Form from './Form'
 
+interface Props {
+  addTask: (title: string, time: number) => void
+}
+
+const Header: React.FC<Props> = ({ addTask }) => {
   return (
     <header className="header">
       <h1>todos</h1>
-      <NewTaskForm addTask={addTask} />
+      <Form addTask={addTask} />
     </header>
   )
-}
-
-Header.propTypes = {
-  ...headerCallbacksPropTypes,
 }
 
 export default Header

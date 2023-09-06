@@ -1,29 +1,40 @@
-import { footerCallbackPropTypes, statePropTypes } from '../../app-prop-types'
-import TasksFilter from '../TasksFilter'
+import React from 'react'
 
-function Footer(props) {
-  const { tasks, filter, clearCompleted, setFilter } = props
+import { type TaskData, type TaskFilter } from '../../model/types'
 
-  const numberOfActiveTasks = tasks.reduce((count, task) => (!task.completed ? count + 1 : count), 0)
+import Filter from './Filter'
+
+interface Props {
+  tasks: TaskData[]
+  filter: TaskFilter
+  clearCompleted: () => void
+  setFilter: (filter: TaskFilter) => void
+}
+
+const Footer: React.FC<Props> = ({
+  tasks,
+  filter,
+  clearCompleted,
+  setFilter,
+}) => {
+  const numberOfActiveTasks = tasks.reduce(
+    (count, task) => (!task.completed ? count + 1 : count),
+    0
+  )
 
   return (
     <footer className="footer">
       <span className="todo-count">{numberOfActiveTasks} items left</span>
-      <TasksFilter filter={filter} setFilter={setFilter} />
-      <button type="button" className="clear-completed" onClick={clearCompleted}>
+      <Filter filter={filter} setFilter={setFilter} />
+      <button
+        type="button"
+        className="clear-completed"
+        onClick={clearCompleted}
+      >
         Clear completed
       </button>
     </footer>
   )
-}
-
-Footer.defaultProps = {
-  clearCompleted: () => {},
-}
-
-Footer.propTypes = {
-  ...statePropTypes,
-  ...footerCallbackPropTypes,
 }
 
 export default Footer

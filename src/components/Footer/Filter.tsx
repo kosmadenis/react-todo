@@ -1,34 +1,51 @@
-import { filterPropTypes, tasksFilterCallbackPropTypes } from '../../app-prop-types'
+import React from 'react'
 
-function TasksFilter(props) {
-  const { filter, setFilter } = props
+import { TaskFilter } from '../../model/types'
 
+interface Props {
+  filter: TaskFilter
+  setFilter: (filter: TaskFilter) => void
+}
+
+const Filter: React.FC<Props> = ({ filter, setFilter }) => {
   const filterAllOnClick = () => {
-    setFilter('all')
+    setFilter(TaskFilter.All)
   }
 
   const filterActiveOnClick = () => {
-    setFilter('active')
+    setFilter(TaskFilter.Active)
   }
 
   const filterCompletedOnClick = () => {
-    setFilter('completed')
+    setFilter(TaskFilter.Completed)
   }
 
   return (
     <ul className="filters">
       <li>
-        <button type="button" className={filter === 'all' ? 'selected' : null} onClick={filterAllOnClick}>
+        <button
+          type="button"
+          className={filter === 'all' ? 'selected' : undefined}
+          onClick={filterAllOnClick}
+        >
           All
         </button>
       </li>
       <li>
-        <button type="button" className={filter === 'active' ? 'selected' : null} onClick={filterActiveOnClick}>
+        <button
+          type="button"
+          className={filter === 'active' ? 'selected' : undefined}
+          onClick={filterActiveOnClick}
+        >
           Active
         </button>
       </li>
       <li>
-        <button type="button" className={filter === 'completed' ? 'selected' : null} onClick={filterCompletedOnClick}>
+        <button
+          type="button"
+          className={filter === 'completed' ? 'selected' : undefined}
+          onClick={filterCompletedOnClick}
+        >
           Completed
         </button>
       </li>
@@ -36,13 +53,4 @@ function TasksFilter(props) {
   )
 }
 
-TasksFilter.defaultProps = {
-  setFilter: () => {},
-}
-
-TasksFilter.propTypes = {
-  ...filterPropTypes,
-  ...tasksFilterCallbackPropTypes,
-}
-
-export default TasksFilter
+export default Filter

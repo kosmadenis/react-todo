@@ -1,110 +1,149 @@
-import { Component } from 'react'
+import React from 'react'
 
 import Footer from '../Footer'
 import Header from '../Header'
 import TaskList from '../TaskList'
+import { type TaskData, TaskFilter } from '../../model/types'
+import * as taskUtil from '../../model/task'
 
-class App extends Component {
-  constructor(props) {
+interface Props {}
+
+interface State {
+  filter: TaskFilter
+  tasks: TaskData[]
+}
+
+const App = class extends React.Component<Props, State> {
+  currentId: number
+
+  constructor(props: Props) {
     super(props)
 
-    const tasks = [
+    const tasks: TaskData[] = [
       {
         id: 2,
         creationTime: new Date(Date.now() - 17_000),
-        description: 'Completed task',
+        title: 'Completed task',
         completed: true,
         editing: false,
+
+        timerTime: 745,
+        timerOrigin: null,
+        timerRunning: false,
       },
       {
         id: 1,
         creationTime: new Date(Date.now() - 100_000),
-        description: 'Editing task',
+        title: 'Editing task',
         completed: false,
         editing: true,
+
+        timerTime: 61,
+        timerOrigin: null,
+        timerRunning: false,
       },
       {
         id: 0,
         creationTime: new Date(Date.now() - 300_000),
-        description: 'Active task',
+        title: 'Active task',
         completed: false,
         editing: false,
+
+        timerTime: 10,
+        timerOrigin: Date.now(),
+        timerRunning: true,
       },
     ]
 
     this.currentId = tasks.length
 
     this.state = {
-      filter: 'all',
+      filter: TaskFilter.All,
       tasks,
     }
   }
 
-  /* --- Привязанные методы --- */
-
-  addTask = (description) => {
-    const newTask = {
-      id: this.currentId,
-      creationTime: new Date(),
-      description,
-      completed: false,
-      editing: false,
-    }
+  addTask = (title: string, time: number) => {
+    const newTask = taskUtil.create(this.currentId, title, time)
 
     this.currentId += 1
 
-    this.setState(({ tasks }) => ({
+    this.setState(({ tasks }: State) => ({
       tasks: [newTask, ...tasks.slice()],
     }))
   }
 
-  toggleTaskCompleted = (id) => {
-    this.setState(({ tasks }) => ({
-      tasks: tasks.map((task) => (task.id === id ? { ...task, completed: !task.completed } : task)),
+  toggleTaskCompleted = (id: number) => {
+    this.setState(({ tasks }: State) => ({
+      tasks: tasks.map((task) => {
+        if (task.id !== id) {
+          return task
+        }
+
+        return task.completed
+          ? taskUtil.setActive(task)
+          : taskUtil.setCompleted(task)
+      }),
     }))
   }
 
-  setTaskDescription = (id, description) => {
-    this.setState(({ tasks }) => ({
-      tasks: tasks.map((task) => (task.id === id ? { ...task, description } : task)),
+  setTaskTitle = (id: number, title: string) => {
+    this.setState(({ tasks }: State) => ({
+      tasks: tasks.map((task) =>
+        task.id === id ? taskUtil.setTitle(task, title) : task
+      ),
     }))
   }
 
-  startEditingTask = (id) => {
-    this.setState(({ tasks }) => ({
-      tasks: tasks.map((task) => (task.id === id ? { ...task, editing: true } : task)),
+  startEditingTask = (id: number) => {
+    this.setState(({ tasks }: State) => ({
+      tasks: tasks.map((task) =>
+        task.id === id ? taskUtil.startEditing(task) : task
+      ),
     }))
   }
 
-  finishEditingTask = (id) => {
-    this.setState(({ tasks }) => ({
+  finishEditingTask = (id: number) => {
+    this.setState(({ tasks }: State) => ({
       tasks: tasks
-        // 1. Удалить этот таск, если текст пустой
-        .filter((task) => task.id !== id || !!task.description)
-        // 2. Выключить этому таску режим редактирования
-        .map((task) => (task.id === id ? { ...task, editing: false } : task)),
+        .filter((task) => task.id !== id || !!task.title)
+        .map((task) => (task.id === id ? taskUtil.stopEditing(task) : task)),
     }))
   }
 
-  removeTask = (id) => {
-    this.setState(({ tasks }) => ({
+  removeTask = (id: number) => {
+    this.setState(({ tasks }: State) => ({
       tasks: tasks.filter((task) => task.id !== id),
     }))
   }
 
-  setFilter = (filter) => {
+  setFilter = (filter: TaskFilter) => {
     this.setState({ filter })
   }
 
   clearCompleted = () => {
-    this.setState(({ tasks }) => ({
+    this.setState(({ tasks }: State) => ({
       tasks: tasks.filter((task) => !task.completed),
     }))
   }
 
-  /* --- Методы --- */
+  resumeTaskTimer = (id: number) => {
+    this.setState(({ tasks }: State) => ({
+      tasks: tasks.map((task) =>
+        task.id === id ? taskUtil.resumeTimer(task) : task
+      ),
+    }))
+  }
 
-  render() {
+  pauseTaskTimer = (id: number) => {
+    this.setState(({ tasks }: State) => ({
+      tasks: tasks.map((task) =>
+        task.id === id ? taskUtil.pauseTimer(task) : task
+      ),
+    }))
+  }
+
+  override render() {
     const { filter, tasks } = this.state
 
     return (
@@ -115,12 +154,19 @@ class App extends Component {
             tasks={tasks}
             filter={filter}
             toggleTaskCompleted={this.toggleTaskCompleted}
-            setTaskDescription={this.setTaskDescription}
+            setTaskTitle={this.setTaskTitle}
             startEditingTask={this.startEditingTask}
             finishEditingTask={this.finishEditingTask}
             removeTask={this.removeTask}
+            resumeTaskTimer={this.resumeTaskTimer}
+            pauseTaskTimer={this.pauseTaskTimer}
           />
-          <Footer tasks={tasks} filter={filter} setFilter={this.setFilter} clearCompleted={this.clearCompleted} />
+          <Footer
+            tasks={tasks}
+            filter={filter}
+            setFilter={this.setFilter}
+            clearCompleted={this.clearCompleted}
+          />
         </section>
       </section>
     )
