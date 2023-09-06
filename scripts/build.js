@@ -12,7 +12,7 @@ process.on('unhandledRejection', (err) => {
 })
 
 // Ensure environment variables are read.
-require('../config/env.mjs')
+require('../config/env')
 
 const path = require('path')
 const chalk = require('react-dev-utils/chalk')
