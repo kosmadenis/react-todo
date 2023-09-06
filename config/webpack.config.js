@@ -35,14 +35,6 @@ const reactRefreshRuntimeEntry = require.resolve('react-refresh/runtime')
 const reactRefreshWebpackPluginRuntimeEntry = require.resolve(
   '@pmmmwh/react-refresh-webpack-plugin'
 )
-const babelRuntimeEntry = require.resolve('babel-preset-react-app')
-const babelRuntimeEntryHelpers = require.resolve(
-  '@babel/runtime/helpers/esm/assertThisInitialized',
-  { paths: [babelRuntimeEntry] }
-)
-const babelRuntimeRegenerator = require.resolve('@babel/runtime/regenerator', {
-  paths: [babelRuntimeEntry],
-})
 
 // Some apps do not need the benefits of saving a web request, so not inlining the chunk
 // makes for a smoother build process.
@@ -331,9 +323,6 @@ module.exports = function (webpackEnv) {
           paths.appPackageJson,
           reactRefreshRuntimeEntry,
           reactRefreshWebpackPluginRuntimeEntry,
-          babelRuntimeEntry,
-          babelRuntimeEntryHelpers,
-          babelRuntimeRegenerator,
         ]),
       ],
     },
@@ -409,16 +398,10 @@ module.exports = function (webpackEnv) {
               include: paths.appSrc,
               loader: require.resolve('babel-loader'),
               options: {
-                customize: require.resolve(
-                  'babel-preset-react-app/webpack-overrides'
-                ),
                 presets: [
-                  [
-                    require.resolve('babel-preset-react-app'),
-                    {
-                      runtime: hasJsxRuntime ? 'automatic' : 'classic',
-                    },
-                  ],
+                  '@babel/preset-typescript',
+                  '@babel/preset-react',
+                  '@babel/preset-env',
                 ],
 
                 plugins: [
@@ -445,12 +428,7 @@ module.exports = function (webpackEnv) {
                 babelrc: false,
                 configFile: false,
                 compact: false,
-                presets: [
-                  [
-                    require.resolve('babel-preset-react-app/dependencies'),
-                    { helpers: true },
-                  ],
-                ],
+                presets: ['@babel/preset-env'],
                 cacheDirectory: true,
                 // See #6846 for context on why cacheCompression is disabled
                 cacheCompression: false,
@@ -729,7 +707,7 @@ module.exports = function (webpackEnv) {
           extensions: ['js', 'mjs', 'jsx', 'ts', 'tsx'],
           formatter: require.resolve('react-dev-utils/eslintFormatter'),
           failOnError: !(isEnvDevelopment && emitErrorsAsWarnings),
-          context: paths.appSrc,
+          context: paths.appPath,
           cache: true,
           cacheLocation: path.resolve(
             paths.appNodeModules,
