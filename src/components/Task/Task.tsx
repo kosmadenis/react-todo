@@ -69,12 +69,9 @@ const Task = class extends React.Component<Props, State> {
       resumeTaskTimer,
     } = this.props
 
-    let className = ''
     let input
 
     if (editing) {
-      className += ' editing'
-
       const inputOnKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key !== 'Enter' && event.key !== 'Escape') {
           return
@@ -100,10 +97,6 @@ const Task = class extends React.Component<Props, State> {
       )
     }
 
-    if (completed) {
-      className += ' completed'
-    }
-
     const { timeText } = this.state
 
     const checkboxOnChange = () => {
@@ -121,7 +114,7 @@ const Task = class extends React.Component<Props, State> {
     const checkboxId = `Task-${id}`
 
     return (
-      <li className={className}>
+      <>
         <div className="view">
           <input
             aria-label="toggle completion"
@@ -157,7 +150,7 @@ const Task = class extends React.Component<Props, State> {
           />
         </div>
         {input}
-      </li>
+      </>
     )
   }
 }

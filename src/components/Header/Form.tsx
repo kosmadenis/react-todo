@@ -84,6 +84,7 @@ const Form = class extends React.Component<Props, State> {
           aria-label="new task text"
           className="new-todo"
           placeholder="Task"
+          required
           autoFocus
         />
         <input

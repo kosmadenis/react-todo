@@ -28,9 +28,16 @@ const TaskList: React.FC<Props> = ({ tasks, filter, ...callbacks }) => {
     return true
   })
 
-  const taskElements = filteredTasks.map((task) => (
-    <Task key={task.id} {...task} {...callbacks} />
-  ))
+  const taskElements = filteredTasks.map((task) => {
+    const className =
+      (task.editing ? 'editing' : '') + (task.completed ? ' completed' : '')
+
+    return (
+      <li key={task.id} className={className}>
+        <Task {...task} {...callbacks} />
+      </li>
+    )
+  })
 
   return <ul className="todo-list">{taskElements}</ul>
 }
