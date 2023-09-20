@@ -6,105 +6,75 @@ interface Props {
   addTask: (title: string, time: number) => void
 }
 
-interface State {
-  title: string
-  minutes: string
-  seconds: string
-}
+const Form: React.FC<Props> = ({ addTask }) => {
+  const [title, setTitle] = React.useState('')
+  const [minutes, setMinutes] = React.useState('')
+  const [seconds, setSeconds] = React.useState('')
 
-const Form = class extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props)
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
 
-    this.state = {
-      title: '',
-      minutes: '',
-      seconds: '',
+    if (!title.trim() || /[^0-9]/.test(minutes) || /[^0-9]/.test(seconds)) {
+      return
     }
+
+    const numMinutes = minutes ? Number.parseInt(minutes, 10) : 0
+    const numSeconds = seconds ? Number.parseInt(seconds, 10) : 0
+
+    const time = numMinutes * 60 + numSeconds
+
+    addTask(title, time)
+
+    setTitle('')
+    setMinutes('')
+    setSeconds('')
   }
 
-  override render() {
-    const { title, minutes, seconds } = this.state
-
-    const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-      event.preventDefault()
-
-      const { addTask } = this.props
-
-      const {
-        title: currentTitle,
-        minutes: currentMinutes,
-        seconds: currentSeconds,
-      } = this.state
-
-      if (
-        !currentTitle.trim() ||
-        /[^0-9]/.test(currentMinutes) ||
-        /[^0-9]/.test(currentSeconds)
-      ) {
-        return
-      }
-
-      const numMinutes = currentMinutes
-        ? Number.parseInt(currentMinutes, 10)
-        : 0
-      const numSeconds = currentSeconds
-        ? Number.parseInt(currentSeconds, 10)
-        : 0
-
-      const time = numMinutes * 60 + numSeconds
-
-      addTask(currentTitle, time)
-
-      this.setState({ title: '', minutes: '', seconds: '' })
-    }
-
-    const onTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      const text = event.target.value
-      this.setState({ title: text })
-    }
-
-    const onMinutesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      const text = event.target.value
-      const numericalText = stripNonNumericalChars(text)
-      this.setState({ minutes: numericalText })
-    }
-
-    const onSecondsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      const text = event.target.value
-      const numericalText = stripNonNumericalChars(text)
-      this.setState({ seconds: numericalText })
-    }
-
-    return (
-      <form onSubmit={onSubmit} className="new-todo-form">
-        <input
-          value={title}
-          onChange={onTitleChange}
-          aria-label="new task text"
-          className="new-todo"
-          placeholder="Task"
-          required
-          autoFocus
-        />
-        <input
-          value={minutes}
-          onChange={onMinutesChange}
-          aria-label="new task time minutes"
-          className="new-todo-form__timer"
-          placeholder="Min"
-        />
-        <input
-          value={seconds}
-          onChange={onSecondsChange}
-          aria-label="new task time seconds"
-          className="new-todo-form__timer"
-          placeholder="Sec"
-        />
-        <button type="submit" aria-hidden hidden />
-      </form>
-    )
+  const onTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const text = event.target.value
+    setTitle(text)
   }
+
+  const onMinutesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const text = event.target.value
+    const numericalText = stripNonNumericalChars(text)
+    setMinutes(numericalText)
+  }
+
+  const onSecondsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const text = event.target.value
+    const numericalText = stripNonNumericalChars(text)
+    setSeconds(numericalText)
+  }
+
+  return (
+    <form onSubmit={onSubmit} className="new-todo-form">
+      <input
+        value={title}
+        onChange={onTitleChange}
+        aria-label="new task text"
+        className="new-todo"
+        placeholder="Task"
+        required
+        autoFocus
+      />
+      <input
+        value={minutes}
+        onChange={onMinutesChange}
+        aria-label="new task time minutes"
+        className="new-todo-form__timer"
+        placeholder="Min"
+      />
+      <input
+        value={seconds}
+        onChange={onSecondsChange}
+        aria-label="new task time seconds"
+        className="new-todo-form__timer"
+        placeholder="Sec"
+      />
+      <button type="submit" aria-hidden hidden />
+    </form>
+  )
 }
 
 export default Form

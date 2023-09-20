@@ -30,7 +30,9 @@ export function setCompleted(task: TaskData): TaskData {
   }
 
   if (task.timerRunning && task.timerOrigin) {
-    modifiedTask.timerTime += Math.max(0, Date.now() - task.timerOrigin) / 1000
+    modifiedTask.timerTime += Math.floor(
+      Math.max(0, Date.now() - task.timerOrigin) / 1000
+    )
   }
 
   return modifiedTask
@@ -65,7 +67,9 @@ export function resumeTimer(task: TaskData): TaskData {
   }
 
   if (task.timerRunning && task.timerOrigin) {
-    modifiedTask.timerTime += Math.max(0, Date.now() - task.timerOrigin) / 1000
+    modifiedTask.timerTime += Math.floor(
+      Math.max(0, Date.now() - task.timerOrigin) / 1000
+    )
   }
 
   return modifiedTask
@@ -79,7 +83,9 @@ export function pauseTimer(task: TaskData): TaskData {
   }
 
   if (task.timerRunning && task.timerOrigin) {
-    modifiedTask.timerTime += Math.max(0, Date.now() - task.timerOrigin) / 1000
+    modifiedTask.timerTime += Math.floor(
+      Math.max(0, Date.now() - task.timerOrigin) / 1000
+    )
   }
 
   return modifiedTask
